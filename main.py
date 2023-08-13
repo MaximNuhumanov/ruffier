@@ -6,12 +6,16 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label 
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput 
+from Seconds import Second
 
 name = ''
 age = 7
 P1 = 0
 P2 = 0
 P3 = 0
+
+SMALL_TIME = 1
+BIG_TIME = 2
 
 class InstrSCR(Screen):
     def __init__(self, mainLableText, lable1Text, lable2Text, **kwargs):
@@ -73,27 +77,42 @@ class InstrSCR(Screen):
 class PulseSCR(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
+
         instr = Label(text = txt_test1)
         
         hBoxLayout = BoxLayout(size_hint = (0.8, None), height = '30sp')
         
+        self.timer = Second(SMALL_TIME)
+        self.timer.bind(finished = self.timer_finish)
 
         H3 = Label(text = "Введіть результат:")
         self.in_pulse = TextInput(multiline = False)
+        self.in_pulse.set_disabled(True)
         hBoxLayout.add_widget(H3)
         hBoxLayout.add_widget(self.in_pulse)
 
-        self.Button2 = Button(text = 'Продовжити', size_hint = (0.3, 0.2), pos_hint = {'center_x': 0.5})
-        self.Button2.on_press = self.next
+        self.Button2 = Button(text = 'Почати', size_hint = (0.3, 0.2), pos_hint = {'center_x': 0.5})
+        self.Button2.on_press = self.timer_start
+        
 
         vBoxLayout = BoxLayout(orientation = "vertical", padding = 8, spacing = 8 ) 
 
         vBoxLayout.add_widget(instr)
+        vBoxLayout.add_widget(self.timer)
         vBoxLayout.add_widget(hBoxLayout)
         vBoxLayout.add_widget(self.Button2) 
 
         self.add_widget(vBoxLayout)
+
+    def timer_start(self):
+        self.timer.start()
+        self.Button2.set_disabled(True)
+        self.Button2.text = 'Продовжити'
+
+    def timer_finish(self, obj, finished):
+        self.in_pulse.set_disabled(False)
+        self.Button2.set_disabled(False)
+        self.Button2.on_press = self.next
 
     def next(self):
         global P1
@@ -109,18 +128,32 @@ class SitUpsSCR(Screen):
         
         instr = Label(text = txt_test2)
 
-        self.Button = Button(text = 'Продовжити', size_hint = (0.3, 0.2), pos_hint = {'center_x': 0.5})
-        self.Button.on_press = self.next
+        self.timer = Second(BIG_TIME)
+        self.timer.bind(finished = self.timer_finish)
+
+        self.Button = Button(text = 'Почати', size_hint = (0.3, 0.2), pos_hint = {'center_x': 0.5})
+        self.Button.on_press = self.timer_start
 
         vBoxLayout = BoxLayout(orientation = "vertical", padding = 8, spacing = 8 ) 
 
         vBoxLayout.add_widget(instr)
+        vBoxLayout.add_widget(self.timer)
         vBoxLayout.add_widget(self.Button)
 
         self.add_widget(vBoxLayout)
 
     def next(self):
         self.manager.current = 'pulsescr2'
+    
+    def timer_start(self):
+        self.timer.start()
+        self.Button.set_disabled(True)
+        self.Button.text = 'Продовжити'
+    
+    def timer_finish(self, obj, finished):
+        self.Button.set_disabled(False)
+        self.Button.on_press = self.next
+
         
     
 

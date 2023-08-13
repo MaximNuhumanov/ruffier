@@ -12,7 +12,7 @@ class Second(Label):
         self.current = 0
         self.total = total
         self.finished = False
-        my_text = 'Пройшло секунд' + str(self.current)
+        my_text = 'Пройшло секунд: ' + str(self.current)
         super().__init__(text = my_text, **kwargs)
 
     def start(self):
@@ -20,7 +20,7 @@ class Second(Label):
         
     def change(self, dt):
         self.current += 1
-        self.text = 'Пройшло секунд' + str(self.current)
+        self.text = 'Пройшло секунд: ' + str(self.current)
         if self.current >= self.total:
             self.finished = True
             return False
